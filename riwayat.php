@@ -11,22 +11,23 @@ include 'koneksi.php';
 <head>
     <title>Riwayat Transaksi - Inventory</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f9f9f9; }
-        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        h2 { color: #2c3e50; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
-        th { background-color: #f8f9fa; color: #333; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        body { font-family: 'Segoe UI', sans-serif; padding: 30px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        h2 { margin-top: 0; color: #2c3e50; display: inline-block; }
+        .btn-back { float: right; background: #3498db; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 14px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 25px; overflow: hidden; border-radius: 8px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #2c3e50; color: white; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        tr:hover { background-color: #f9f9f9; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
         .masuk { background-color: #d4edda; color: #155724; }
         .keluar { background-color: #f8d7da; color: #721c24; }
-        .btn-back { text-decoration: none; color: #0275d8; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Laporan Riwayat Transaksi</h2>
-        <a href="index.php" class="btn-back"><< Kembali ke Dashboard</a>
+        <h2>Riwayat Transaksi</h2>
+        <a href="index.php" class="btn-back"> Kembali</a>
         
         <table>
             <thead>
@@ -42,20 +43,18 @@ include 'koneksi.php';
             <tbody>
                 <?php 
                 $no = 1;
-                $sql = "SELECT riwayat.*, barang.nama_barang FROM riwayat 
-                        JOIN barang ON riwayat.id_barang = barang.id_barang 
-                        ORDER BY tanggal DESC";
-                $query = mysqli_query($koneksi, $sql);
+                $query = mysqli_query($koneksi, "SELECT riwayat.*, barang.nama_barang FROM riwayat 
+                        JOIN barang ON riwayat.id_barang = barang.id_barang ORDER BY tanggal DESC");
                 while($r = mysqli_fetch_array($query)){
-                    $kelas = ($r['jenis_transaksi'] == 'masuk') ? 'masuk' : 'keluar';
+                    $type_class = ($r['jenis_transaksi'] == 'masuk') ? 'masuk' : 'keluar';
                     ?>
                     <tr>
                         <td><?php echo $no++; ?></td>
-                        <td><?php echo date('d/m/Y H:i', strtotime($r['tanggal'])); ?></td>
+                        <td><small><?php echo date('d M Y, H:i', strtotime($r['tanggal'])); ?></small></td>
                         <td><b><?php echo $r['nama_barang']; ?></b></td>
-                        <td><span class="badge <?php echo $kelas; ?>"><?php echo $r['jenis_transaksi']; ?></span></td>
+                        <td><span class="badge <?php echo $type_class; ?>"><?php echo strtoupper($r['jenis_transaksi']); ?></span></td>
                         <td><?php echo $r['jumlah']; ?></td>
-                        <td><?php echo $r['keterangan']; ?></td>
+                        <td><i style="color: #777;"><?php echo $r['keterangan']; ?></i></td>
                     </tr>
                 <?php } ?>
             </tbody>
