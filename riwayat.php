@@ -1,55 +1,65 @@
-<?php include 'koneksi.php'; ?>
+<?php 
+session_start();
+if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){
+    header("location:login.php?pesan=belum_login");
+    exit();
+}
+include 'koneksi.php'; 
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Riwayat Transaksi</title>
+    <title>Riwayat Transaksi - Inventory</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f9f9f9; }
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h2 { color: #2c3e50; }
         table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        .masuk { color: #5cb85c; font-weight: bold; }
-        .keluar { color: #d9534f; font-weight: bold; }
-        .btn-back { text-decoration: none; color: #0275d8; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; color: #333; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .masuk { background-color: #d4edda; color: #155724; }
+        .keluar { background-color: #f8d7da; color: #721c24; }
+        .btn-back { text-decoration: none; color: #0275d8; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h2>Laporan Riwayat Barang Masuk & Keluar</h2>
-    <a href="index.php" class="btn-back"><< Kembali ke Dashboard</a>
-    
-    <table>
-        <tr>
-            <th>No</th>
-            <th>Tanggal & Waktu</th>
-            <th>Nama Barang</th>
-            <th>Jenis</th>
-            <th>Jumlah</th>
-            <th>Keterangan</th>
-        </tr>
-        <?php 
-        $no = 1;
-        // Query untuk menggabungkan tabel riwayat dan barang
-        $sql = "SELECT riwayat.*, barang.nama_barang 
-                FROM riwayat 
-                JOIN barang ON riwayat.id_barang = barang.id_barang 
-                ORDER BY tanggal DESC";
-        $query = mysqli_query($koneksi, $sql);
+    <div class="container">
+        <h2>Laporan Riwayat Transaksi</h2>
+        <a href="index.php" class="btn-back"><< Kembali ke Dashboard</a>
         
-        while($r = mysqli_fetch_array($query)){
-            ?>
-            <tr>
-                <td><?php echo $no++; ?></td>
-                <td><?php echo date('d/m/Y H:i', strtotime($r['tanggal'])); ?></td>
-                <td><?php echo $r['nama_barang']; ?></td>
-                <td class="<?php echo $r['jenis_transaksi']; ?>">
-                    <?php echo strtoupper($r['jenis_transaksi']); ?>
-                </td>
-                <td><?php echo $r['jumlah']; ?></td>
-                <td><?php echo $r['keterangan']; ?></td>
-            </tr>
-            <?php 
-        }
-        ?>
-    </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Waktu</th>
+                    <th>Barang</th>
+                    <th>Tipe</th>
+                    <th>Jumlah</th>
+                    <th>Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $no = 1;
+                $sql = "SELECT riwayat.*, barang.nama_barang FROM riwayat 
+                        JOIN barang ON riwayat.id_barang = barang.id_barang 
+                        ORDER BY tanggal DESC";
+                $query = mysqli_query($koneksi, $sql);
+                while($r = mysqli_fetch_array($query)){
+                    $kelas = ($r['jenis_transaksi'] == 'masuk') ? 'masuk' : 'keluar';
+                    ?>
+                    <tr>
+                        <td><?php echo $no++; ?></td>
+                        <td><?php echo date('d/m/Y H:i', strtotime($r['tanggal'])); ?></td>
+                        <td><b><?php echo $r['nama_barang']; ?></b></td>
+                        <td><span class="badge <?php echo $kelas; ?>"><?php echo $r['jenis_transaksi']; ?></span></td>
+                        <td><?php echo $r['jumlah']; ?></td>
+                        <td><?php echo $r['keterangan']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
