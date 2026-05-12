@@ -1,9 +1,10 @@
 <?php 
 session_start();
 
-// Cek apakah user sudah login, jika belum maka dialihkan ke halaman login
-if($_SESSION['status'] != "login"){
+// Proteksi Halaman: Jika belum login, dilempar ke login.php
+if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){
     header("location:login.php?pesan=belum_login");
+    exit();
 }
 
 include 'koneksi.php'; 
@@ -13,47 +14,47 @@ include 'koneksi.php';
 <head>
     <title>Dashboard Stok Barang</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        .btn { padding: 5px 10px; text-decoration: none; border-radius: 3px; color: white; display: inline-block; }
+        body { font-family: sans-serif; padding: 20px; background-color: #f9f9f9; }
+        .header-box { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        table { border-collapse: collapse; width: 100%; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
+        th { background-color: #f4f4f4; color: #333; }
+        .btn { padding: 6px 12px; text-decoration: none; border-radius: 4px; color: white; display: inline-block; font-size: 13px; }
         .btn-edit { background-color: #f0ad4e; }
         .btn-hapus { background-color: #d9534f; }
-        .btn-logout { background-color: #333; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; float: right; }
-        .menu { margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #ddd; }
-        .user-info { margin-bottom: 15px; font-size: 14px; }
+        .btn-logout { background-color: #333; float: right; }
+        .menu { margin: 20px 0; }
+        .badge-stok { background: #eee; padding: 3px 8px; border-radius: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="user-info">
-        <a href="logout.php" class="btn-logout">Logout</a>
-        Selamat Datang, <b><?php echo $_SESSION['nama']; ?></b>!
+    <div class="header-box">
+        <a href="logout.php" class="btn btn-logout" onclick="return confirm('Yakin ingin keluar?')">Logout</a>
+        <span>Selamat Datang, <b><?php echo $_SESSION['nama']; ?></b>!</span>
+        <h2 style="margin-top: 10px; color: #2c3e50;">Dashboard Manajemen Stok</h2>
     </div>
 
-    <h2>Dashboard Manajemen Stok</h2>
-
     <div class="menu">
-        <a href="tambah.php" style="background: #5cb85c; color: white; padding: 8px; text-decoration: none; border-radius: 3px;">+ Tambah Barang</a> | 
-        <a href="transaksi.php" style="background: #0275d8; color: white; padding: 8px; text-decoration: none; border-radius: 3px;">+ Transaksi (Masuk/Keluar)</a> | 
-        <a href="riwayat.php" style="text-decoration: none; color: #0275d8; font-weight: bold;">Lihat Riwayat Transaksi</a>
+        <a href="tambah.php" class="btn" style="background: #5cb85c;">+ Tambah Barang Baru</a>
+        <a href="transaksi.php" class="btn" style="background: #0275d8;">+ Transaksi (Masuk/Keluar)</a>
+        <a href="riwayat.php" style="margin-left: 15px; text-decoration: none; color: #0275d8; font-weight: bold;">[ Lihat Riwayat ]</a>
     </div>
 
     <table>
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode</th>
+                <th>Kode Barang</th>
                 <th>Nama Barang</th>
                 <th>Stok Saat Ini</th>
-                <th>Aksi</th>
+                <th>Aksi Control</th>
             </tr>
         </thead>
         <tbody>
             <?php
             $no = 1;
-            // Query mengambil data dari tabel barang
+            // Menampilkan barang terbaru di posisi paling atas
             $data = mysqli_query($koneksi, "SELECT * FROM barang ORDER BY id_barang DESC");
             
             if (mysqli_num_rows($data) > 0) {
@@ -61,18 +62,18 @@ include 'koneksi.php';
                     ?>
                     <tr>
                         <td><?php echo $no++; ?></td>
-                        <td><strong><?php echo $d['kode_barang']; ?></strong></td>
-                        <td><?php echo $d['nama_barang']; ?></td>
-                        <td><?php echo $d['stok']; ?></td>
+                        <td><code style="color: #e83e8c;"><?php echo $d['kode_barang']; ?></code></td>
+                        <td><b><?php echo $d['nama_barang']; ?></b></td>
+                        <td><span class="badge-stok"><?php echo $d['stok']; ?></span></td>
                         <td>
                             <a href="edit.php?id=<?php echo $d['id_barang']; ?>" class="btn btn-edit">Edit</a>
-                            <a href="hapus.php?id=<?php echo $d['id_barang']; ?>" class="btn btn-hapus" onclick="return confirm('Yakin ingin menghapus barang ini? Semua riwayat terkait juga akan hilang.')">Hapus</a>
+                            <a href="hapus.php?id=<?php echo $d['id_barang']; ?>" class="btn btn-hapus" onclick="return confirm('Peringatan: Menghapus barang akan menghapus seluruh data transaksi terkait. Lanjutkan?')">Hapus</a>
                         </td>
                     </tr>
                     <?php 
                 }
             } else {
-                echo "<tr><td colspan='5' style='text-align:center;'>Belum ada data barang.</td></tr>";
+                echo "<tr><td colspan='5' style='text-align:center; padding: 30px;'>Belum ada data barang. Silakan tambah barang baru.</td></tr>";
             }
             ?>
         </tbody>
