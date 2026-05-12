@@ -9,17 +9,26 @@ include 'koneksi.php';
 // Mengambil data untuk Ringkasan
 $total_barang = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang"));
 $stok_limit = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang WHERE stok < 5"));
+
+// AMBIL DATA UNTUK GRAFIK (BARU)
+$label_grafik = [];
+$data_grafik  = [];
+$query_chart  = mysqli_query($koneksi, "SELECT nama_barang, stok FROM barang ORDER BY nama_barang ASC");
+while($row = mysqli_fetch_array($query_chart)){
+    $label_grafik[] = $row['nama_barang'];
+    $data_grafik[]  = $row['stok'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Manajemen Stok</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #f0f2f5; margin: 0; padding: 20px; }
         
-        /* Navbar Area */
         .header { 
             display: flex; justify-content: space-between; align-items: center; 
             background: white; padding: 15px 30px; border-radius: 12px;
@@ -28,29 +37,33 @@ $stok_limit = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang WHERE
         .user-info b { color: #0275d8; }
         .btn-logout { background: #dc3545; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 14px; }
 
-        /* Stats Cards */
         .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px; }
         .card-stat { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #0275d8; }
-        .card-stat h3 { margin: 0; font-size: 14px; color: #777; text-transform: uppercase; }
+        .card-stat h3 { margin: 0; font-size: 12px; color: #777; text-transform: uppercase; letter-spacing: 1px; }
         .card-stat p { margin: 10px 0 0; font-size: 28px; font-weight: bold; color: #333; }
         .border-warning { border-left-color: #ffc107; }
 
-        /* Table & Action Area */
+        /* Style untuk Container Grafik */
+        .chart-container { 
+            background: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 25px; 
+        }
+
         .main-content { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .action-bar { margin-bottom: 25px; display: flex; gap: 10px; align-items: center; }
-        .btn { padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; }
+        .action-bar { margin-bottom: 25px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .btn { padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; display: inline-block; }
         .btn-add { background: #28a745; color: white; }
         .btn-trans { background: #007bff; color: white; }
-        .btn-history { color: #007bff; }
+        .btn-history { background: #f8f9fa; color: #007bff; border: 1px solid #007bff; }
         .btn:hover { opacity: 0.8; transform: translateY(-2px); }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #f8f9fa; padding: 15px; text-align: left; color: #555; border-bottom: 2px solid #eee; }
-        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        th { background: #f8f9fa; padding: 15px; text-align: left; color: #555; border-bottom: 2px solid #eee; font-size: 14px; }
+        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; font-size: 15px; }
         .badge-stok { background: #e9ecef; padding: 5px 12px; border-radius: 20px; font-weight: bold; }
         .low-stock { color: #dc3545; background: #f8d7da; }
         
-        .btn-edit { color: #ffc107; text-decoration: none; margin-right: 10px; font-weight: bold; }
+        .btn-edit { color: #ffc107; text-decoration: none; margin-right: 15px; font-weight: bold; }
         .btn-delete { color: #dc3545; text-decoration: none; font-weight: bold; }
     </style>
 </head>
@@ -69,6 +82,13 @@ $stok_limit = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang WHERE
         <div class="card-stat border-warning">
             <h3>Stok Menipis (< 5)</h3>
             <p><?php echo $stok_limit; ?></p>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3 style="margin-top:0; color:#2c3e50; font-size: 18px;">Visualisasi Stok Barang</h3>
+        <div style="position: relative; height:300px; width:100%;">
+            <canvas id="stokChart"></canvas>
         </div>
     </div>
 
@@ -112,6 +132,40 @@ $stok_limit = mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang WHERE
             </tbody>
         </table>
     </div>
+
+    <script>
+    const ctx = document.getElementById('stokChart').getContext('2d');
+    const stokChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($label_grafik); ?>,
+            datasets: [{
+                label: 'Jumlah Stok',
+                data: <?php echo json_encode($data_grafik); ?>,
+                backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                borderColor: 'rgba(41, 128, 185, 1)',
+                borderWidth: 2,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#f0f0f0' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+    </script>
 
 </body>
 </html>
