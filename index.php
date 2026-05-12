@@ -1,28 +1,43 @@
 <?php 
-include 'koneksi.php'; // Pastikan koneksi dipanggil di paling atas
+session_start();
+
+// Cek apakah user sudah login, jika belum maka dialihkan ke halaman login
+if($_SESSION['status'] != "login"){
+    header("location:login.php?pesan=belum_login");
+}
+
+include 'koneksi.php'; 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard Stok Barang</title>
     <style>
-        table { border-collapse: collapse; width: 80%; margin-top: 20px; }
+        body { font-family: sans-serif; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
         th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
         th { background-color: #f4f4f4; }
-        .btn { padding: 5px 10px; text-decoration: none; border-radius: 3px; color: white; }
+        .btn { padding: 5px 10px; text-decoration: none; border-radius: 3px; color: white; display: inline-block; }
         .btn-edit { background-color: #f0ad4e; }
         .btn-hapus { background-color: #d9534f; }
-        .menu { margin-bottom: 20px; }
+        .btn-logout { background-color: #333; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; float: right; }
+        .menu { margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #ddd; }
+        .user-info { margin-bottom: 15px; font-size: 14px; }
     </style>
 </head>
 <body>
 
+    <div class="user-info">
+        <a href="logout.php" class="btn-logout">Logout</a>
+        Selamat Datang, <b><?php echo $_SESSION['nama']; ?></b>!
+    </div>
+
     <h2>Dashboard Manajemen Stok</h2>
 
     <div class="menu">
-        <a href="tambah.php" style="background: #5cb85c; color: white; padding: 8px; text-decoration: none;">+ Tambah Barang</a> | 
-        <a href="transaksi.php" style="background: #0275d8; color: white; padding: 8px; text-decoration: none;">+ Transaksi (Masuk/Keluar)</a> | 
-        <a href="riwayat.php">Lihat Riwayat Transaksi</a>
+        <a href="tambah.php" style="background: #5cb85c; color: white; padding: 8px; text-decoration: none; border-radius: 3px;">+ Tambah Barang</a> | 
+        <a href="transaksi.php" style="background: #0275d8; color: white; padding: 8px; text-decoration: none; border-radius: 3px;">+ Transaksi (Masuk/Keluar)</a> | 
+        <a href="riwayat.php" style="text-decoration: none; color: #0275d8; font-weight: bold;">Lihat Riwayat Transaksi</a>
     </div>
 
     <table>
