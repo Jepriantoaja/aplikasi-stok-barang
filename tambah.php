@@ -54,6 +54,7 @@ if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){
             max-width: 500px;
             border: 1px solid rgba(0,0,0,0.02);
             animation: slideUp 0.6s ease-out;
+            position: relative; /* Ditambahkan untuk menjaga layout */
         }
 
         @keyframes slideUp {
@@ -62,13 +63,10 @@ if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){
         }
 
         .form-header { text-align: center; margin-bottom: 35px; }
-        .icon-circle {
-            width: 60px; height: 60px; background: #f0f4ff; color: var(--primary);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; margin: 0 auto 15px;
-        }
-        .form-header h2 { margin: 0; color: var(--text-dark); font-weight: 800; font-size: 22px; }
-        .form-header p { color: #64748b; font-size: 14px; margin-top: 5px; }
+        .form-header h2 { margin: 0; color: var(--text-dark); font-weight: 800; font-size: 24px; }
+        .form-header p { color: #64748b; font-size: 14px; margin-top: 8px; }
+
+        /* Styling stat-icon-wrapper dihapus karena elemen sudah tidak ada */
 
         .input-box { margin-bottom: 22px; }
         .input-box label {
@@ -115,9 +113,6 @@ if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){
 
     <div class="form-card">
         <div class="form-header">
-            <div class="icon-circle">
-                <i class="fas fa-box-open"></i>
-            </div>
             <h2>Tambah Barang</h2>
             <p>Masukkan detail inventaris baru ke sistem</p>
         </div>
@@ -149,8 +144,8 @@ if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){
 
             <div class="btn-group">
                 <button type="submit" class="btn-submit">
-                    Simpan Data Barang <i class="fas fa-save"></i>
-                </button>
+                    Simpan Data Barang
+                    </button>
                 <a href="index.php" class="btn-back">
                     <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
                 </a>

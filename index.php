@@ -35,7 +35,7 @@ while($row = mysqli_fetch_array($query_chart)){
             --primary: #4361ee;
             --secondary: #3f37c9;
             --success: #4cc9f0;
-            --danger: #f72585;
+            --danger: #ef4444;
             --bg: #f8fafe;
             --sidebar: #ffffff;
         }
@@ -49,16 +49,9 @@ while($row = mysqli_fetch_array($query_chart)){
             padding: 30px 20px; display: flex; flex-direction: column; position: fixed; height: 100vh;
         }
 
-        /* Update: Brand dibuat Center dan Ikon Dihapus */
         .brand { 
-            font-size: 20px; 
-            font-weight: 800; 
-            color: var(--primary); 
-            margin-bottom: 40px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; /* Membuat teks ke tengah */
-            text-align: center;
+            font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 40px; 
+            display: flex; align-items: center; justify-content: center; text-align: center; letter-spacing: 1px;
         }
 
         .nav-link { 
@@ -71,35 +64,80 @@ while($row = mysqli_fetch_array($query_chart)){
         .main { margin-left: 260px; width: calc(100% - 260px); padding: 30px 40px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
         
-        .profile-link { text-decoration: none; transition: transform 0.2s; }
-        .profile-link:hover { transform: scale(1.05); }
         .user-pill { background: white; padding: 8px 20px; border-radius: 50px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 10px; cursor: pointer; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 35px; }
-        .card-glass { 
-            background: white; padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02); position: relative; overflow: hidden;
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 35px; 
         }
-        .card-glass h3 { font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
-        .card-glass p { font-size: 32px; font-weight: 700; margin: 10px 0 0; color: #1e293b; }
-        .card-icon { position: absolute; right: -10px; bottom: -10px; font-size: 80px; opacity: 0.05; transform: rotate(-15deg); }
 
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            /* Diubah: justify-content dari space-between menjadi flex-start agar teks ke kiri */
+            justify-content: flex-start; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(67, 97, 238, 0.08);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+        }
+
+        .card-primary::before { background: var(--primary); }
+        .card-danger::before { background: var(--danger); }
+
+        .stat-info h3 {
+            margin: 0;
+            font-size: 13px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .stat-info p {
+            margin: 8px 0 0;
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        /* stat-icon-wrapper dihapus karena sudah tidak digunakan */
+
+        .content-card { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); margin-bottom: 30px; }
         .btn-premium { 
             padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 600;
             display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 14px;
         }
-        .btn-primary-p { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2); }
+        .btn-primary-p { background: var(--primary); color: white; }
         .btn-primary-p:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4); }
 
-        .content-card { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); margin-bottom: 30px; }
-        
         table { width: 100%; border-spacing: 0 10px; border-collapse: separate; }
-        th { color: #64748b; font-weight: 600; font-size: 13px; padding: 15px; border-bottom: 1px solid #f1f5f9; }
+        th { color: #64748b; font-weight: 600; font-size: 13px; padding: 15px; border-bottom: 1px solid #f1f5f9; text-align: left; }
         td { background: white; padding: 18px 15px; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; }
-        td:first-child { border-left: 1px solid #f8f9fa; border-radius: 15px 0 0 15px; }
-        td:last-child { border-right: 1px solid #f8f9fa; border-radius: 0 15px 15px 0; }
+        td:first-child { border-radius: 15px 0 0 15px; }
+        td:last-child { border-radius: 0 15px 15px 0; }
 
-        .badge-premium { padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 12px; }
+        .badge-premium { padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
         .bg-low { background: #fee2e2; color: #ef4444; }
         .bg-safe { background: #f0fdf4; color: #22c55e; }
     </style>
@@ -125,25 +163,26 @@ while($row = mysqli_fetch_array($query_chart)){
         <div class="top-bar">
             <h1 style="font-size: 24px; font-weight: 800; color: #1e293b;">Overview System</h1>
             
-            <a href="logout.php" class="profile-link" title="Klik untuk Logout">
-                <div class="user-pill">
-                    <i class="fas fa-user-circle" style="color: var(--primary);"></i>
-                    <span style="font-weight: 600; color: #1e293b;"><?php echo $_SESSION['nama']; ?></span>
-                </div>
-            </a>
+            <div class="user-pill">
+                <i class="fas fa-user-circle" style="color: var(--primary);"></i>
+                <span style="font-weight: 600; color: #1e293b;"><?php echo $_SESSION['nama']; ?></span>
+            </div>
         </div>
 
         <div class="stats-grid">
-            <div class="card-glass">
-                <h3>Total Jenis Barang</h3>
-                <p><?php echo $total_barang; ?></p>
-                <i class="fas fa-cubes card-icon"></i>
-            </div>
-            <div class="card-glass" style="border-bottom: 4px solid var(--danger);">
-                <h3>Kritis (Stok < 5)</h3>
-                <p style="color: var(--danger);"><?php echo $stok_limit; ?></p>
-                <i class="fas fa-exclamation-triangle card-icon"></i>
-            </div>
+            <div class="stat-card card-primary">
+                <div class="stat-info">
+                    <h3>Total Jenis Barang</h3>
+                    <p><?php echo $total_barang; ?></p>
+                </div>
+                </div>
+
+            <div class="stat-card card-danger">
+                <div class="stat-info">
+                    <h3>Kritis (Stok < 5)</h3>
+                    <p><?php echo $stok_limit; ?></p>
+                </div>
+                </div>
         </div>
 
         <div class="content-card">
@@ -156,9 +195,7 @@ while($row = mysqli_fetch_array($query_chart)){
         <div class="content-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                 <h3 style="margin: 0; font-size: 18px; color: #1e293b;">Inventaris Barang</h3>
-                <div class="action-flex" style="margin:0;">
-                    <a href="tambah.php" class="btn-premium btn-primary-p">+ Baru</a>
-                </div>
+                <a href="tambah.php" class="btn-premium btn-primary-p">+ Baru</a>
             </div>
 
             <table>
@@ -202,8 +239,8 @@ while($row = mysqli_fetch_array($query_chart)){
     <script>
         const ctx = document.getElementById('stokChart').getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, 'rgba(67, 97, 238, 0.8)');
-        gradient.addColorStop(1, 'rgba(67, 97, 238, 0.1)');
+        gradient.addColorStop(0, 'rgba(67, 97, 238, 0.4)');
+        gradient.addColorStop(1, 'rgba(67, 97, 238, 0.0)');
 
         new Chart(ctx, {
             type: 'line', 
@@ -218,17 +255,16 @@ while($row = mysqli_fetch_array($query_chart)){
                     borderWidth: 3,
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#4361ee',
-                    pointRadius: 6,
+                    pointRadius: 5,
                     tension: 0.4
                 }]
-                
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
+                    y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#e2e8f0' } },
                     x: { grid: { display: false } }
                 }
             }

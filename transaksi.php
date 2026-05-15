@@ -16,6 +16,10 @@ include 'koneksi.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <style>
         :root {
             --primary: #4361ee;
@@ -36,7 +40,6 @@ include 'koneksi.php';
 
         .container { width: 100%; max-width: 550px; padding: 20px; }
 
-        /* Premium Form Card */
         .card-transaction {
             background: var(--glass);
             backdrop-filter: blur(10px);
@@ -62,7 +65,6 @@ include 'koneksi.php';
             letter-spacing: 0.5px;
         }
 
-        /* Form Controls */
         .form-control {
             width: 100%;
             padding: 14px 18px;
@@ -75,16 +77,23 @@ include 'koneksi.php';
             outline: none;
         }
 
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        /* Custom Styling agar Select2 menyatu dengan tema */
+        .select2-container--default .select2-selection--single {
+            height: 50px !important;
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            display: flex;
+            align-items: center;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            padding-left: 18px !important;
+            color: #1e293b !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 48px !important;
+            right: 10px !important;
         }
 
-        select.form-control { cursor: pointer; }
-
-        textarea.form-control { resize: none; height: 100px; }
-
-        /* Premium Button */
         .btn-process {
             width: 100%;
             padding: 16px;
@@ -119,27 +128,13 @@ include 'koneksi.php';
             font-weight: 600;
             transition: 0.3s;
         }
-
         .btn-back:hover { color: var(--primary); }
-
-        /* Floating Icon Background */
-        .bg-icon {
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            font-size: 80px;
-            color: var(--primary);
-            opacity: 0.05;
-            transform: rotate(15deg);
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="card-transaction">
-            <i class="fas fa-exchange-alt bg-icon"></i>
-            
             <div class="header">
                 <h2>Catat Transaksi</h2>
                 <p>Kelola arus masuk dan keluar barang inventaris</p>
@@ -148,8 +143,8 @@ include 'koneksi.php';
             <form action="transaksi_aksi.php" method="post">
                 <div class="input-group">
                     <label><i class="fas fa-search"></i> Pilih Barang</label>
-                    <select name="id_barang" class="form-control" required>
-                        <option value="">-- Cari Nama atau Kode Barang --</option>
+                    <select name="id_barang" class="form-control pencarian-barang" required>
+                        <option value="">-- Ketik Nama atau Kode Barang --</option>
                         <?php 
                         $data = mysqli_query($koneksi, "SELECT * FROM barang ORDER BY nama_barang ASC");
                         while($d = mysqli_fetch_array($data)){
@@ -188,5 +183,14 @@ include 'koneksi.php';
         </div>
     </div>
 
+    <script>
+        $(document).ready(function() {
+            $('.pencarian-barang').select2({
+                placeholder: "-- Ketik Nama atau Kode Barang --",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 </body>
 </html>
