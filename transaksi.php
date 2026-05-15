@@ -54,6 +54,25 @@ include 'koneksi.php';
         .header h2 { font-weight: 800; color: #1e293b; margin: 0; font-size: 26px; }
         .header p { color: #64748b; font-size: 14px; margin-top: 8px; }
 
+        /* Style untuk Alert Validasi */
+        .alert-validation {
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
         .input-group { margin-bottom: 24px; }
         .input-group label { 
             display: block; 
@@ -75,9 +94,9 @@ include 'koneksi.php';
             color: #1e293b;
             transition: 0.3s;
             outline: none;
+            box-sizing: border-box;
         }
 
-        /* Custom Styling agar Select2 menyatu dengan tema */
         .select2-container--default .select2-selection--single {
             height: 50px !important;
             border: 2px solid #e2e8f0 !important;
@@ -140,6 +159,21 @@ include 'koneksi.php';
                 <p>Kelola arus masuk dan keluar barang inventaris</p>
             </div>
 
+            <?php 
+            if(isset($_GET['pesan'])){
+                if($_GET['pesan'] == "stok_kosong"){
+                    echo "<div class='alert-validation' style='background: #fee2e2; color: #ef4444; border: 1px solid #fecaca;'>
+                            <i class='fas fa-circle-xmark'></i> 
+                            Stock barang yang anda proses kosong dan tidak dapat diproses!
+                          </div>";
+                } else if($_GET['pesan'] == "stok_kurang"){
+                    echo "<div class='alert-validation' style='background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5;'>
+                            <i class='fas fa-triangle-exclamation'></i> 
+                            Gagal! Jumlah keluar melebihi sisa stok yang tersedia!
+                          </div>";
+                }
+            }
+            ?>
             <form action="transaksi_aksi.php" method="post">
                 <div class="input-group">
                     <label><i class="fas fa-search"></i> Pilih Barang</label>

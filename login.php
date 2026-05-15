@@ -18,7 +18,6 @@
             margin: 0;
             padding: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            /* Background Gradient Mesh Premium */
             background: radial-gradient(at 0% 0%, rgba(67, 97, 238, 0.15) 0px, transparent 50%),
                         radial-gradient(at 100% 100%, rgba(76, 201, 240, 0.15) 0px, transparent 50%),
                         #f8fafe;
@@ -29,7 +28,6 @@
             overflow: hidden;
         }
 
-        /* Dekorasi Lingkaran Abstrak */
         .shape {
             position: absolute;
             filter: blur(80px);
@@ -51,6 +49,8 @@
             max-width: 400px;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
+            /* Tambahan agar card tetap rapi */
+            box-sizing: border-box;
         }
 
         @keyframes fadeIn {
@@ -96,6 +96,7 @@
             top: 40px;
             color: #94a3b8;
             font-size: 16px;
+            z-index: 1;
         }
 
         .input-group input {
@@ -107,6 +108,8 @@
             font-size: 15px;
             transition: all 0.3s;
             color: var(--text-dark);
+            /* PERBAIKAN UTAMA: Agar padding tidak menambah lebar elemen */
+            box-sizing: border-box;
         }
 
         .input-group input:focus {
@@ -128,6 +131,7 @@
             transition: all 0.3s;
             margin-top: 10px;
             box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2);
+            box-sizing: border-box;
         }
 
         .btn-login:hover {
@@ -147,6 +151,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            box-sizing: border-box;
         }
     </style>
 </head>
