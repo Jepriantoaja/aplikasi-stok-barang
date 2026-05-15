@@ -60,7 +60,11 @@ while($row = mysqli_fetch_array($query_chart)){
         .main { margin-left: 260px; width: calc(100% - 260px); padding: 30px 40px; }
         
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
-        .user-pill { background: white; padding: 8px 20px; border-radius: 50px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 10px; }
+        
+        /* Tombol Profil yang bisa diklik */
+        .profile-link { text-decoration: none; transition: transform 0.2s; }
+        .profile-link:hover { transform: scale(1.05); }
+        .user-pill { background: white; padding: 8px 20px; border-radius: 50px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 10px; cursor: pointer; }
 
         /* Premium Cards */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 35px; }
@@ -116,10 +120,13 @@ while($row = mysqli_fetch_array($query_chart)){
     <main class="main">
         <div class="top-bar">
             <h1 style="font-size: 24px; font-weight: 800; color: #1e293b;">Overview System</h1>
-            <div class="user-pill">
-                <i class="fas fa-user-circle" style="color: var(--primary);"></i>
-                <span style="font-weight: 600;"><?php echo $_SESSION['nama']; ?></span>
-            </div>
+            
+            <a href="logout.php" class="profile-link" title="Klik untuk Logout">
+                <div class="user-pill">
+                    <i class="fas fa-user-circle" style="color: var(--primary);"></i>
+                    <span style="font-weight: 600; color: #1e293b;"><?php echo $_SESSION['nama']; ?></span>
+                </div>
+            </a>
         </div>
 
         <div class="stats-grid">
@@ -195,7 +202,7 @@ while($row = mysqli_fetch_array($query_chart)){
         gradient.addColorStop(1, 'rgba(67, 97, 238, 0.1)');
 
         new Chart(ctx, {
-            type: 'line', // Line chart terlihat lebih "mahal" untuk tren
+            type: 'line', 
             data: {
                 labels: <?php echo json_encode($label_grafik); ?>,
                 datasets: [{
@@ -210,6 +217,7 @@ while($row = mysqli_fetch_array($query_chart)){
                     pointRadius: 6,
                     tension: 0.4
                 }]
+                
             },
             options: {
                 responsive: true,

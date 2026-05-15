@@ -1,123 +1,192 @@
 <?php 
 session_start();
-// Proteksi Halaman
 if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){
     header("location:login.php?pesan=belum_login");
     exit();
 }
-include 'koneksi.php'; 
+include 'koneksi.php';
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaksi Barang - Inventory System</title>
+    <title>Transaction Engine | Stock Master</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body {
-            margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; background-color: #f4f7f6;
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --bg-gradient: linear-gradient(135deg, #f8fafe 0%, #e2e8f0 100%);
+            --glass: rgba(255, 255, 255, 0.9);
         }
-        .card {
-            background: white; padding: 40px;
-            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 100%; max-width: 500px;
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-gradient); 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
         }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 25px; font-weight: 700; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
-        select, input, textarea {
-            width: 100%; padding: 12px 15px;
-            border: 1px solid #ddd; border-radius: 8px;
-            outline: none; transition: all 0.3s ease;
-            background-color: #f8f9fa;
+
+        .container { width: 100%; max-width: 550px; padding: 20px; }
+
+        /* Premium Form Card */
+        .card-transaction {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 45px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            position: relative;
         }
-        select:focus, input:focus, textarea:focus {
-            border-color: #0275d8; background-color: #fff;
-            box-shadow: 0 0 8px rgba(2, 117, 216, 0.15);
+
+        .header { text-align: center; margin-bottom: 35px; }
+        .header h2 { font-weight: 800; color: #1e293b; margin: 0; font-size: 26px; }
+        .header p { color: #64748b; font-size: 14px; margin-top: 8px; }
+
+        .input-group { margin-bottom: 24px; }
+        .input-group label { 
+            display: block; 
+            font-weight: 600; 
+            color: #475569; 
+            margin-bottom: 10px; 
+            font-size: 13px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        textarea { height: 80px; resize: none; }
-        .btn-proses {
-            width: 100%; padding: 14px;
-            background: #0275d8; color: white;
-            border: none; border-radius: 8px;
-            font-size: 16px; font-weight: 700;
-            cursor: pointer; transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(2, 117, 216, 0.2);
+
+        /* Form Controls */
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            font-size: 15px;
+            color: #1e293b;
+            transition: 0.3s;
+            outline: none;
         }
-        .btn-proses:hover { background: #025aa5; transform: translateY(-2px); }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        }
+
+        select.form-control { cursor: pointer; }
+
+        textarea.form-control { resize: none; height: 100px; }
+
+        /* Premium Button */
+        .btn-process {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px -5px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-process:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(67, 97, 238, 0.5);
+        }
+
         .btn-back {
-            display: block; text-align: center; margin-top: 20px;
-            color: #3498db; text-decoration: none;
-            font-size: 14px; font-weight: 600;
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
         }
-        .btn-back:hover { text-decoration: underline; }
+
+        .btn-back:hover { color: var(--primary); }
+
+        /* Floating Icon Background */
+        .bg-icon {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 80px;
+            color: var(--primary);
+            opacity: 0.05;
+            transform: rotate(15deg);
+        }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>Catat Transaksi</h2>
-        
-        <form method="POST">
-            <div class="form-group">
-                <label>Pilih Barang</label>
-                <select name="id_barang" required>
-                    <option value="" disabled selected>-- Pilih Barang --</option>
-                    <?php 
-                    $barang = mysqli_query($koneksi, "SELECT * FROM barang ORDER BY nama_barang ASC");
-                    while($b = mysqli_fetch_array($barang)){
-                        echo "<option value='".$b['id_barang']."'>".$b['nama_barang']." (Stok: ".$b['stok'].")</option>";
-                    }
-                    ?>
-                </select>
+    <div class="container">
+        <div class="card-transaction">
+            <i class="fas fa-exchange-alt bg-icon"></i>
+            
+            <div class="header">
+                <h2>Catat Transaksi</h2>
+                <p>Kelola arus masuk dan keluar barang inventaris</p>
             </div>
 
-            <div class="form-group">
-                <label>Jenis Transaksi</label>
-                <select name="jenis" required>
-                    <option value="masuk">Barang Masuk (+)</option>
-                    <option value="keluar">Barang Keluar (-)</option>
-                </select>
-            </div>
+            <form action="transaksi_aksi.php" method="post">
+                <div class="input-group">
+                    <label><i class="fas fa-search"></i> Pilih Barang</label>
+                    <select name="id_barang" class="form-control" required>
+                        <option value="">-- Cari Nama atau Kode Barang --</option>
+                        <?php 
+                        $data = mysqli_query($koneksi, "SELECT * FROM barang ORDER BY nama_barang ASC");
+                        while($d = mysqli_fetch_array($data)){
+                            echo "<option value='".$d['id_barang']."'>".$d['kode_barang']." - ".$d['nama_barang']."</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label>Jumlah Unit</label>
-                <input type="number" name="jumlah" min="1" placeholder="Masukkan jumlah unit" required>
-            </div>
+                <div class="input-group">
+                    <label><i class="fas fa-sort-amount-up-alt"></i> Jenis Transaksi</label>
+                    <select name="jenis" class="form-control" required>
+                        <option value="masuk">Barang Masuk (+)</option>
+                        <option value="keluar">Barang Keluar (-)</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label>Keterangan Tambahan</label>
-                <textarea name="keterangan" placeholder="Contoh: Pengadaan stok baru atau pesanan pelanggan"></textarea>
-            </div>
+                <div class="input-group">
+                    <label><i class="fas fa-calculator"></i> Jumlah Unit</label>
+                    <input type="number" name="jumlah" class="form-control" placeholder="0" min="1" required>
+                </div>
 
-            <button type="submit" name="proses" class="btn-proses">PROSES TRANSAKSI</button>
-            <a href="index.php" class="btn-back"> Kembali ke Dashboard</a>
-        </form>
+                <div class="input-group">
+                    <label><i class="fas fa-sticky-note"></i> Keterangan Tambahan</label>
+                    <textarea name="keterangan" class="form-control" placeholder="Contoh: Pengadaan stok baru atau pesanan pelanggan..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-process">
+                    PROSES TRANSAKSI <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <a href="index.php" class="btn-back">
+                    <i class="fas fa-chevron-left"></i> Kembali ke Dashboard
+                </a>
+            </form>
+        </div>
     </div>
 
-    <?php 
-    if(isset($_POST['proses'])){
-        $id_barang = mysqli_real_escape_string($koneksi, $_POST['id_barang']);
-        $jenis     = mysqli_real_escape_string($koneksi, $_POST['jenis']);
-        $jumlah    = mysqli_real_escape_string($koneksi, $_POST['jumlah']);
-        $ket       = mysqli_real_escape_string($koneksi, $_POST['keterangan']);
-
-        // 1. Simpan ke tabel riwayat
-        $ins = mysqli_query($koneksi, "INSERT INTO riwayat (id_barang, jenis_transaksi, jumlah, keterangan) VALUES ('$id_barang', '$jenis', '$jumlah', '$ket')");
-
-        if($ins){
-            // 2. Update stok di tabel barang (Otomatis)
-            if($jenis == 'masuk'){
-                mysqli_query($koneksi, "UPDATE barang SET stok = stok + $jumlah WHERE id_barang = '$id_barang'");
-            } else {
-                mysqli_query($koneksi, "UPDATE barang SET stok = stok - $jumlah WHERE id_barang = '$id_barang'");
-            }
-            echo "<script>alert('Transaksi Berhasil!'); window.location='index.php';</script>";
-        }
-    }
-    ?>
 </body>
 </html>

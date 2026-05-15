@@ -3,7 +3,7 @@ $host = "localhost";
 $user = "root";
 $pass = "";
 $db   = "db_stok_barang";
-$port = 3307; // Sesuai port MySQL di XAMPP kamu
+$port = 3307;
 
 $koneksi = mysqli_connect($host, $user, $pass, $db, $port);
 

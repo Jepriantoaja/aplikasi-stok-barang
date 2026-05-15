@@ -1,16 +1,20 @@
 <?php 
-// menghubungkan koneksi database
+// 1. Hubungkan ke database
 include 'koneksi.php';
 
-// menangkap data yang di kirim dari form
-$kode_barang = $_POST['kode_barang'];
-$nama_barang = $_POST['nama_barang'];
-$stok = $_POST['stok'];
+// 2. Tangkap data dari form
+$kode_barang = mysqli_real_escape_string($koneksi, $_POST['kode_barang']);
+$nama_barang = mysqli_real_escape_string($koneksi, $_POST['nama_barang']);
+$stok        = mysqli_real_escape_string($koneksi, $_POST['stok']);
 
-// menginput data ke database
-mysqli_query($koneksi,"insert into barang values('','$kode_barang','$nama_barang','$stok')");
+// 3. Input data ke tabel 'barang'
+$query = "INSERT INTO barang (kode_barang, nama_barang, stok) VALUES ('$kode_barang', '$nama_barang', '$stok')";
 
-// mengalihkan halaman kembali ke index.php
-header("location:index.php");
-
+if (mysqli_query($koneksi, $query)) {
+    // Jika berhasil, balik ke index.php
+    header("location:index.php?pesan=berhasil");
+} else {
+    // Jika gagal, tampilkan pesan error yang spesifik
+    echo "Gagal input data. Pesan Error: " . mysqli_error($koneksi);
+}
 ?>
