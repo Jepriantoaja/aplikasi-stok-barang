@@ -43,12 +43,24 @@ while($row = mysqli_fetch_array($query_chart)){
         * { box-sizing: border-box; font-family: 'Inter', 'Segoe UI', system-ui; }
         body { background-color: var(--bg); margin: 0; display: flex; min-height: 100vh; }
 
-        /* Sidebar Glassmorphism */
+        /* Sidebar */
         .sidebar {
             width: 260px; background: var(--sidebar); border-right: 1px solid rgba(0,0,0,0.05);
             padding: 30px 20px; display: flex; flex-direction: column; position: fixed; height: 100vh;
         }
-        .brand { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
+
+        /* Update: Brand dibuat Center dan Ikon Dihapus */
+        .brand { 
+            font-size: 20px; 
+            font-weight: 800; 
+            color: var(--primary); 
+            margin-bottom: 40px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; /* Membuat teks ke tengah */
+            text-align: center;
+        }
+
         .nav-link { 
             padding: 12px 15px; text-decoration: none; color: #64748b; border-radius: 10px;
             margin-bottom: 5px; display: flex; align-items: center; gap: 12px; transition: 0.3s;
@@ -56,17 +68,13 @@ while($row = mysqli_fetch_array($query_chart)){
         .nav-link.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3); }
         .nav-link:hover:not(.active) { background: #f1f5f9; color: var(--primary); }
 
-        /* Main Content Area */
         .main { margin-left: 260px; width: calc(100% - 260px); padding: 30px 40px; }
-        
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
         
-        /* Tombol Profil yang bisa diklik */
         .profile-link { text-decoration: none; transition: transform 0.2s; }
         .profile-link:hover { transform: scale(1.05); }
         .user-pill { background: white; padding: 8px 20px; border-radius: 50px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 10px; cursor: pointer; }
 
-        /* Premium Cards */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 35px; }
         .card-glass { 
             background: white; padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.8);
@@ -76,8 +84,6 @@ while($row = mysqli_fetch_array($query_chart)){
         .card-glass p { font-size: 32px; font-weight: 700; margin: 10px 0 0; color: #1e293b; }
         .card-icon { position: absolute; right: -10px; bottom: -10px; font-size: 80px; opacity: 0.05; transform: rotate(-15deg); }
 
-        /* Action Buttons */
-        .action-flex { display: flex; gap: 15px; margin-bottom: 30px; }
         .btn-premium { 
             padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 600;
             display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 14px;
@@ -85,7 +91,6 @@ while($row = mysqli_fetch_array($query_chart)){
         .btn-primary-p { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2); }
         .btn-primary-p:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4); }
 
-        /* Table & Chart Container */
         .content-card { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); margin-bottom: 30px; }
         
         table { width: 100%; border-spacing: 0 10px; border-collapse: separate; }
@@ -103,7 +108,6 @@ while($row = mysqli_fetch_array($query_chart)){
 
     <aside class="sidebar">
         <div class="brand">
-            <i class="fas fa-box-open"></i>
             <span>STOCK MASTER</span>
         </div>
         <nav>
